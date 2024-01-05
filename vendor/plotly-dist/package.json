@@ -1,0 +1,16 @@
+{
+  "name": "plotly-dist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "plotly.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  }
+}
