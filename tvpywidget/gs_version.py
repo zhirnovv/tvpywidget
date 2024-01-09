@@ -9,7 +9,9 @@ def glowscript_version():
     """
 
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    glowscript_lib = os.path.relpath(this_dir, '../vendor/glow', 'glow.min.js')
+    print(this_dir)
+    glowscript_lib = os.path.relpath('../vendor/glow/glow.min.js', this_dir)
+    print(glowscript_lib)
 
     with open(glowscript_lib, 'r', encoding='UTF-8') as f:
         glow_contents = f.read()

@@ -51,6 +51,7 @@
   "dependencies": {
     "@jupyter-widgets/base": "^1.1.10 || ^2 || ^3 || ^4 || ^5 || ^6",
     "glow": "./vendor/glow",
+    "jquery": "./vendor/jquery",
     "jquery-ui.custom": "./vendor/jquery-ui.custom",
     "plotly-dist": "./vendor/plotly-dist"
   },
@@ -70,6 +71,7 @@
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "file-loader": "^6.2.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.0.0",
     "mkdirp": "^0.5.1",

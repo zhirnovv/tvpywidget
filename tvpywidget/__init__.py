@@ -5,7 +5,17 @@
 # Distributed under the terms of the Modified BSD License.
 
 from .example import ExampleWidget
+from pkg_resources import get_distribution, DistributionNotFound
+from .gs_version import glowscript_version
 from ._version import __version__, version_info
+
+__gs_version__ = glowscript_version()
+
+print("running glowscript version", __gs_version__)
+del glowscript_version
+del get_distribution
+del DistributionNotFound
+
 
 def _jupyter_labextension_paths():
     """Called by Jupyter Lab Server to detect if it is a valid labextension and

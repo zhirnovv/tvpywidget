@@ -16,11 +16,14 @@ def sign(x): # for compatibility with Web VPython
     return 0
 
 import sys
-from . import __version__, __gs_version__
+from ._version import __version__ 
+from .gs_version import glowscript_version
 from ._notebook_helpers import _isnotebook
 from ._vector_import_helper import (vector, mag, norm, cross, dot, adjust_up,
                                     adjust_axis, object_rotate)
                                     
+
+__gs_version__ = glowscript_version()
 
 def Exit():
     # no infinite loop here so build processs can finish.
@@ -259,15 +262,16 @@ class baseObj(object):
                 obj.pos = val
 
     def __init__(self, **kwargs):
-        if not (baseObj._view_constructed or
-                baseObj._canvas_constructing):
-            if _isnotebook:
-                print("init base object for notebook")
-                from .with_notebook import _
-            else:
-                print("init base object for pure python")
-                from .no_notebook import _
-            baseObj._view_constructed = True
+        print("init base object")
+        # if not (baseObj._view_constructed or
+        #         baseObj._canvas_constructing):
+        #     if _isnotebook:
+        #         print("init base object for notebook")
+        #         from .with_notebook import _
+        #     else:
+        #         print("init base object for pure python")
+        #         from .no_notebook import _
+        #     baseObj._view_constructed = True
 
         print("registered new object in scene")
         self.idx = baseObj.objCnt   ## an integer
@@ -322,6 +326,7 @@ class baseObj(object):
 
     @classmethod
     def trigger(cls): # isnotebook; called by a canvas update event from browser, coming from GlowWidget.handle_msg
+        print("trigger", cls)
         if cls.empty():
             objdata = 'trigger' # handshake with browser
         else:
@@ -376,26 +381,39 @@ class baseObj(object):
 # and sent as a block to the browser at render times.
 
 class GlowWidget(object):
-    def __init__(self, wsport=None, wsuri=None):
+    def __init__(self, wsport=None, wsuri=None, widget=None):
         print("initializing glow widget with ws port", wsport, "and uri", wsuri)
         global sender
         baseObj.glow = self
+        # sender
+        # sender = None
         if _isnotebook:
-            from ipykernel.comm import Comm
-            if (wsport):
-                self.comm = Comm(target_name='glow', data={'wsport':wsport, 'wsuri':wsuri})
-            else:
-                self.comm = Comm(target_name='glow')
-            self.comm.on_close(self.handle_close)
-            self.comm.on_msg(self.handle_msg)
-            sender = self.comm.send
+            if (widget):
+                self.widget = widget
+                widget.observe(self.observe_cmd, names=["cmd"])
+            # from ipykernel.comm import Comm
+            # if (wsport):
+            #     self.comm = Comm(target_name='tvpywidget', data={'wsport':wsport, 'wsuri':wsuri})
+            # else:
+            #     self.comm = Comm(target_name='tvpywidget')
+            # self.comm.on_close(self.handle_close)
+            # self.comm.on_msg(self.handle_msg)
+            sender = self.send
             self.show = True
         else:
             sender = None
+    
+    def observe_cmd(self, cmd):
+        print(cmd)
+        
+    def send(self, msg):
+        print("sending message from GlowWidget", msg)
+        self.widget.cmd = msg
 
     ## baseObj.object_registry = {}
     ## idx -> instance
     def handle_msg(self, msg):
+        print(msg)
         events = msg['content']['data'] # this is a list of time-ordered events
         for evt in events:
             if 'widget' in evt:
@@ -2892,10 +2910,11 @@ class canvas(baseObj):
 
     def __init__(self, **args):
         baseObj._canvas_constructing = True
-        if _isnotebook:
-            from IPython.display import display, HTML, Javascript
-            display(HTML("""<div id="glowscript" class="glowscript"></div>"""))
-            display(Javascript("""if (typeof Jupyter !== "undefined") { window.__context = { glowscript_container: $("#glowscript").removeAttr("id")};}else{ element.textContent = ' ';}"""))
+        # if _isnotebook:
+        #     from IPython.display import display, HTML, Javascript
+        #     display(HTML("""<div id="glowscript" class="glowscript"></div>"""))
+        #     display(Javascript("""if (typeof Jupyter !== "undefined") { window.__context = { glowscript_container: $("#glowscript").removeAttr("id")};}else{ element.textContent = ' ';}"""))
+        print('INIT INIT INIT')
 
         super(canvas, self).__init__()   ## get idx, attrsupdt
 
